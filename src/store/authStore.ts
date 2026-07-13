@@ -9,6 +9,7 @@ const ROLE_HINT_KEY = 'surveykit-user-role'
 interface AuthState {
   user: User | null
   ready: boolean
+  loggingOut: boolean
   syncSession: (user: User | null) => void
   login: (username: string, password: string) => Promise<void>
   register: (username: string, password: string) => Promise<void>
@@ -41,6 +42,7 @@ export function readRoleHint(): UserRole | null {
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   ready: false,
+  loggingOut: false,
 
   syncSession: (user) => {
     persistRoleHint(user?.role ?? null)
@@ -62,10 +64,15 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   logout: async () => {
-    await authApi.logout()
-    queryClient.setQueryData(authKeys.me(), null)
-    queryClient.removeQueries({ queryKey: surveyKeys.all })
-    persistRoleHint(null)
-    set({ user: null })
+    try {
+      await authApi.logout()
+      queryClient.setQueryData(authKeys.me(), null)
+      queryClient.removeQueries({ queryKey: surveyKeys.all })
+      persistRoleHint(null)
+      set({ user: null, loggingOut: false })
+    } catch (err) {
+      set({ loggingOut: false })
+      throw err
+    }
   },
 }))

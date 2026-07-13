@@ -6,6 +6,7 @@ import { useAuthStore } from '../store/authStore'
 export function RegisterPage() {
   const navigate = useNavigate()
   const user = useAuthStore((s) => s.user)
+  const loggingOut = useAuthStore((s) => s.loggingOut)
   const register = useAuthStore((s) => s.register)
 
   const [username, setUsername] = useState('')
@@ -14,7 +15,7 @@ export function RegisterPage() {
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
-  if (user) {
+  if (user && !loggingOut) {
     return <Navigate to="/" replace />
   }
 

@@ -7,6 +7,7 @@ export function LoginPage() {
   const navigate = useNavigate()
   const location = useLocation()
   const user = useAuthStore((s) => s.user)
+  const loggingOut = useAuthStore((s) => s.loggingOut)
   const login = useAuthStore((s) => s.login)
 
   const [username, setUsername] = useState('')
@@ -16,7 +17,7 @@ export function LoginPage() {
 
   const from = (location.state as { from?: string } | null)?.from || '/'
 
-  if (user) {
+  if (user && !loggingOut) {
     return <Navigate to={from} replace />
   }
 

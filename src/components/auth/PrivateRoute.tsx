@@ -10,6 +10,7 @@ interface PrivateRouteProps {
 export function PrivateRoute({ children, roles }: PrivateRouteProps) {
   const user = useAuthStore((s) => s.user)
   const ready = useAuthStore((s) => s.ready)
+  const loggingOut = useAuthStore((s) => s.loggingOut)
   const location = useLocation()
 
   if (!ready) {
@@ -17,6 +18,9 @@ export function PrivateRoute({ children, roles }: PrivateRouteProps) {
   }
 
   if (!user) {
+    if (loggingOut) {
+      return null
+    }
     return <Navigate to="/login" replace state={{ from: location.pathname }} />
   }
 

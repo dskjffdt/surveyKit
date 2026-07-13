@@ -38,8 +38,13 @@ export function AppLayout({ children }: AppLayoutProps) {
   }
 
   const handleLogout = async () => {
-    await logout()
-    navigate('/login')
+    useAuthStore.setState({ loggingOut: true })
+    navigate('/login', { replace: true })
+    try {
+      await logout()
+    } catch {
+      // logout() resets loggingOut on failure
+    }
   }
 
   const shellRole = user?.role ?? readRoleHint()
