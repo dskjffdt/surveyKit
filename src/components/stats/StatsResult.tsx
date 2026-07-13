@@ -13,7 +13,9 @@ export function StatsResult({ stat, responseCount }: StatsResultProps) {
         <div className="choice-stats">
           {stat.stats.map((s) => (
             <div key={s.option} className="choice-stat-row">
-              <span className="choice-label">{s.option}</span>
+              <span className="choice-label" title={s.option}>
+                {s.option}
+              </span>
               <div className="bar-track">
                 <div className="bar-fill" style={{ width: `${s.percentage}%` }} />
               </div>
@@ -25,26 +27,31 @@ export function StatsResult({ stat, responseCount }: StatsResultProps) {
         </div>
       )
 
-    case 'rating':
+    case 'rating': {
+      const maxCount = Math.max(...stat.stats.distribution.map((d) => d.count), 1)
       return (
         <div className="rating-stats">
-          <p className="rating-avg">平均分：{stat.stats.average}</p>
-          {stat.stats.distribution.map((d) => (
-            <div key={d.value} className="choice-stat-row">
-              <span className="choice-label">{d.value} 分</span>
-              <div className="bar-track">
-                <div
-                  className="bar-fill"
-                  style={{
-                    width: `${responseCount > 0 ? Math.round((d.count / responseCount) * 100) : 0}%`,
-                  }}
-                />
+          <p className="rating-avg">平均分 {stat.stats.average}</p>
+          {stat.stats.distribution.map((d) => {
+            const percentage = responseCount > 0 ? Math.round((d.count / responseCount) * 100) : 0
+            return (
+              <div key={d.value} className="choice-stat-row">
+                <span className="choice-label">{d.value} 分</span>
+                <div className="bar-track">
+                  <div
+                    className="bar-fill"
+                    style={{ width: `${(d.count / maxCount) * 100}%` }}
+                  />
+                </div>
+                <span className="choice-count">
+                  {d.count} ({percentage}%)
+                </span>
               </div>
-              <span className="choice-count">{d.count}</span>
-            </div>
-          ))}
+            )
+          })}
         </div>
       )
+    }
 
     case 'text':
       return (

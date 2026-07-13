@@ -4,12 +4,15 @@ export type SurveyStatus = 'draft' | 'published'
 
 export interface Survey {
   id: string
+  ownerId: string
+  ownerName?: string
   title: string
   description: string
   status: SurveyStatus
   questions: Question[]
   createdAt: number
   updatedAt: number
+  responseCount?: number
 }
 
 // 题目

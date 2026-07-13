@@ -5,11 +5,21 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:server": "node server/src/index.js",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.101.2",
+    "axios": "^1.13.2",
+    "bcryptjs": "^3.0.2",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.14.1",
     "nanoid": "^5.1.16",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",

@@ -1,0 +1,57 @@
+{
+  "users": [
+    {
+      "id": "3ca6dd01-72a8-4e7f-b744-bfce888f26c7",
+      "username": "admin",
+      "passwordHash": "$2b$10$jiy.Qe5A.6ciB.T0AElV4ugkz16EPua79yzsNClUuj1ZbGEQfT0cy",
+      "role": "admin"
+    },
+    {
+      "id": "2ef16e2c-bb7b-4110-be4d-e70889b289ff",
+      "username": "creator",
+      "passwordHash": "$2b$10$SysGfBst5CPd4KJqdopZQeZ4PRSSYJLZU6.bYe6xfFAGeOENiycsW",
+      "role": "creator"
+    }
+  ],
+  "surveys": [
+    {
+      "id": "a29fba34-7f40-4e92-8078-d15e18050cdc",
+      "ownerId": "2ef16e2c-bb7b-4110-be4d-e70889b289ff",
+      "title": "客户满意度调查",
+      "description": "感谢您抽出时间填写这份问卷",
+      "status": "published",
+      "questions": [
+        {
+          "id": "dd461499-8b5c-4411-a5cd-edd4e0059457",
+          "type": "single",
+          "title": "您对我们的整体满意度？",
+          "required": true,
+          "options": [
+            "非常满意",
+            "满意",
+            "一般",
+            "不满意"
+          ]
+        },
+        {
+          "id": "68427ecb-92a9-4491-b6fc-50cdbcc8acb0",
+          "type": "rating",
+          "title": "您会向朋友推荐我们吗？",
+          "required": true,
+          "max": 5
+        },
+        {
+          "id": "ded6f948-47ed-4168-87b4-2fb5633620f0",
+          "type": "text",
+          "title": "还有什么建议？",
+          "required": false,
+          "placeholder": "请输入您的建议",
+          "multiline": true
+        }
+      ],
+      "createdAt": 1783760379364,
+      "updatedAt": 1783760379364
+    }
+  ],
+  "responses": []
+}

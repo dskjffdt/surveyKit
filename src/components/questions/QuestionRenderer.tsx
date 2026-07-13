@@ -9,8 +9,6 @@ interface QuestionRendererProps {
   onChange?: (value: AnswerValue) => void
   onUpdate?: (patch: Partial<Question>) => void
   onDelete?: () => void
-  onMoveUp?: () => void
-  onMoveDown?: () => void
 }
 
 export function QuestionRenderer(props: QuestionRendererProps) {
@@ -26,8 +24,6 @@ export function QuestionRenderer(props: QuestionRendererProps) {
       index={index}
       onUpdate={props.onUpdate}
       onDelete={props.onDelete}
-      onMoveUp={props.onMoveUp}
-      onMoveDown={props.onMoveDown}
     />
   )
 }
@@ -37,16 +33,12 @@ function EditView({
   index,
   onUpdate,
   onDelete,
-  onMoveUp,
-  onMoveDown,
-}: Pick<QuestionRendererProps, 'question' | 'index' | 'onUpdate' | 'onDelete' | 'onMoveUp' | 'onMoveDown'>) {
+}: Pick<QuestionRendererProps, 'question' | 'index' | 'onUpdate' | 'onDelete'>) {
   return (
     <div className="question-card edit">
       <div className="question-header">
         <span className="question-type-badge">{QUESTION_TYPE_LABELS[question.type]}</span>
         <div className="question-actions">
-          <button type="button" onClick={onMoveUp} disabled={!onMoveUp}>↑</button>
-          <button type="button" onClick={onMoveDown} disabled={!onMoveDown}>↓</button>
           <button type="button" className="danger" onClick={onDelete}>删除</button>
         </div>
       </div>
