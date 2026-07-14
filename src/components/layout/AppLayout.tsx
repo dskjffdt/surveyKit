@@ -24,14 +24,15 @@ export function AppLayout({ children }: AppLayoutProps) {
   const { pathname } = useLocation()
   const navigate = useNavigate()
   const isFill = pathname.startsWith('/fill')
+  const isPreview = pathname.startsWith('/preview')
   const isAuthPage = pathname.startsWith('/login') || pathname.startsWith('/register')
   const user = useAuthStore((s) => s.user)
   const ready = useAuthStore((s) => s.ready)
   const logout = useAuthStore((s) => s.logout)
 
-  if (isFill || isAuthPage) {
+  if (isFill || isPreview || isAuthPage) {
     return (
-      <div className={`app-shell ${isFill ? 'app-shell--fill' : ''}`}>
+      <div className={`app-shell ${isFill || isPreview ? 'app-shell--fill' : ''}`}>
         <main className="app-main">{children}</main>
       </div>
     )

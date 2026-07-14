@@ -1,28 +1,10 @@
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
+import { OverviewCards } from '../components/surveys/OverviewCards'
 import { useSurveysQuery } from '../queries/surveys'
-
-const OVERVIEW_TONES = ['blue', 'green', 'amber', 'violet'] as const
 
 export function AdminDashboardPage() {
   const { data: surveys = [] } = useSurveysQuery()
-
-  const overview = useMemo(() => {
-    const published = surveys.filter((s) => s.status === 'published').length
-    const draft = surveys.length - published
-    const responses = surveys.reduce((sum, s) => sum + (s.responseCount ?? 0), 0)
-    return { total: surveys.length, published, draft, responses }
-  }, [surveys])
-
-  const overviewCards = useMemo(
-    () => [
-      { label: '问卷总数', value: overview.total },
-      { label: '已发布', value: overview.published },
-      { label: '草稿', value: overview.draft },
-      { label: '答卷总数', value: overview.responses },
-    ],
-    [overview],
-  )
 
   const rows = useMemo(
     () => [...surveys].sort((a, b) => (b.responseCount ?? 0) - (a.responseCount ?? 0)),
@@ -44,17 +26,7 @@ export function AdminDashboardPage() {
         </div>
       ) : (
         <>
-          <div className="overview-cards page-overview">
-            {overviewCards.map((card, index) => (
-              <div
-                key={card.label}
-                className={`overview-card overview-card--${OVERVIEW_TONES[index]}`}
-              >
-                <span className="overview-value">{card.value}</span>
-                <span className="overview-label">{card.label}</span>
-              </div>
-            ))}
-          </div>
+          <OverviewCards surveys={surveys} />
 
           <section className="panel admin-data-table">
             <div className="section-head">
@@ -88,13 +60,16 @@ export function AdminDashboardPage() {
                       <td>{survey.responseCount ?? 0}</td>
                       <td>{new Date(survey.updatedAt).toLocaleDateString('zh-CN')}</td>
                       <td>
-                        {survey.status === 'published' ? (
-                          <Link to={`/stats/${survey.id}`} className="btn-secondary btn-sm">
-                            查看统计
+                        <div className="admin-data-actions">
+                          <Link to={`/preview/${survey.id}`} className="btn-secondary btn-sm" target="_blank">
+                            预览
                           </Link>
-                        ) : (
-                          <span className="admin-data-muted">—</span>
-                        )}
+                          {survey.status === 'published' && (
+                            <Link to={`/stats/${survey.id}`} className="btn-secondary btn-sm">
+                              统计
+                            </Link>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))}

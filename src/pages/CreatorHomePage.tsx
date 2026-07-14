@@ -1,39 +1,19 @@
 import { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ShareFillPanel } from '../components/share/ShareFillPanel'
+import { OverviewCards } from '../components/surveys/OverviewCards'
 import {
   useCreateSurveyMutation,
   useDeleteSurveyMutation,
   useSurveysQuery,
 } from '../queries/surveys'
-import { useAuthStore } from '../store/authStore'
-
-const OVERVIEW_TONES = ['blue', 'green', 'amber', 'violet'] as const
 
 export function CreatorHomePage() {
   const navigate = useNavigate()
-  const user = useAuthStore((s) => s.user)
   const { data: surveys = [] } = useSurveysQuery()
   const createSurveyMutation = useCreateSurveyMutation()
   const deleteSurveyMutation = useDeleteSurveyMutation()
   const [creating, setCreating] = useState(false)
-
-  const overview = useMemo(() => {
-    const published = surveys.filter((s) => s.status === 'published').length
-    const draft = surveys.length - published
-    const responses = surveys.reduce((sum, s) => sum + (s.responseCount ?? 0), 0)
-    return { total: surveys.length, published, draft, responses }
-  }, [surveys])
-
-  const overviewCards = useMemo(
-    () => [
-      { label: '问卷总数', value: overview.total },
-      { label: '已发布', value: overview.published },
-      { label: '草稿', value: overview.draft },
-      { label: '答卷总数', value: overview.responses },
-    ],
-    [overview],
-  )
 
   const sortedSurveys = useMemo(
     () => [...surveys].sort((a, b) => b.updatedAt - a.updatedAt),
@@ -85,17 +65,7 @@ export function CreatorHomePage() {
         </div>
       ) : (
         <>
-          <div className="overview-cards page-overview creator-overview">
-            {overviewCards.map((card, index) => (
-              <div
-                key={card.label}
-                className={`overview-card overview-card--${OVERVIEW_TONES[index]}`}
-              >
-                <span className="overview-value">{card.value}</span>
-                <span className="overview-label">{card.label}</span>
-              </div>
-            ))}
-          </div>
+          <OverviewCards surveys={surveys} className="creator-overview" />
 
           <section className="creator-surveys">
             <div className="creator-surveys-head section-head">
@@ -126,37 +96,35 @@ export function CreatorHomePage() {
                     <Link to={`/editor/${survey.id}`} className="btn-secondary btn-sm">
                       编辑
                     </Link>
+                    <Link
+                      to={`/preview/${survey.id}`}
+                      className="btn-secondary btn-sm"
+                      target="_blank"
+                    >
+                      预览
+                    </Link>
                     {survey.status === 'published' && (
                       <>
                         <ShareFillPanel surveyId={survey.id} compact />
                         <Link to={`/stats/${survey.id}`} className="btn-secondary btn-sm">
                           统计
                         </Link>
-                        <Link
-                          to={`/fill/${survey.id}`}
-                          className="btn-text btn-sm"
-                          target="_blank"
-                        >
-                          预览填答
-                        </Link>
                       </>
                     )}
-                    {survey.ownerId === user?.id && (
-                      <button
-                        type="button"
-                        className="btn-text danger btn-sm survey-card-delete"
-                        onClick={async () => {
-                          if (!window.confirm('确定删除这份问卷？')) return
-                          try {
-                            await deleteSurveyMutation.mutateAsync(survey.id)
-                          } catch (err) {
-                            alert(err instanceof Error ? err.message : '删除失败')
-                          }
-                        }}
-                      >
-                        删除
-                      </button>
-                    )}
+                    <button
+                      type="button"
+                      className="btn-text danger btn-sm survey-card-delete"
+                      onClick={async () => {
+                        if (!window.confirm('确定删除这份问卷？')) return
+                        try {
+                          await deleteSurveyMutation.mutateAsync(survey.id)
+                        } catch (err) {
+                          alert(err instanceof Error ? err.message : '删除失败')
+                        }
+                      }}
+                    >
+                      删除
+                    </button>
                   </div>
                 </article>
               ))}

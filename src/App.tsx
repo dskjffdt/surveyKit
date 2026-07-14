@@ -8,6 +8,7 @@ import {
   LazyFillPage,
   LazyHomePage,
   LazyLoginPage,
+  LazyPreviewPage,
   LazyRegisterPage,
   LazyStatsPage,
 } from './routes/lazyPages'
@@ -24,6 +25,14 @@ function AppRoutes() {
             <Route path="/login" element={<LazyLoginPage />} />
             <Route path="/register" element={<LazyRegisterPage />} />
             <Route path="/fill/:id" element={<LazyFillPage />} />
+            <Route
+              path="/preview/:id"
+              element={
+                <PrivateRoute roles={['admin', 'creator']}>
+                  <LazyPreviewPage />
+                </PrivateRoute>
+              }
+            />
             <Route
               path="/"
               element={

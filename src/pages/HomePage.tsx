@@ -2,6 +2,7 @@ import { Suspense } from 'react'
 import { useAuthStore } from '../store/authStore'
 import { useSurveysQuery } from '../queries/surveys'
 import { PageGate } from '../components/ui/PageGate'
+import { PageLoading } from '../components/ui/PageLoading'
 import { LazyAdminDashboardPage, LazyCreatorHomePage } from '../routes/lazyPages'
 
 export function HomePage() {
@@ -14,7 +15,7 @@ export function HomePage() {
 
   return (
     <PageGate pending={pending} error={error} onRetry={() => surveysQuery.refetch()}>
-      <Suspense fallback={<div className="page page-loading-state page-loading-hold" aria-busy="true" />}>
+      <Suspense fallback={<PageLoading />}>
         {user?.role === 'admin' ? <LazyAdminDashboardPage /> : <LazyCreatorHomePage />}
       </Suspense>
     </PageGate>

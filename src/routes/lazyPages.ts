@@ -10,6 +10,7 @@ function lazyNamed<T extends ComponentType<unknown>>(
 export const LazyLoginPage = lazyNamed(() => import('../pages/LoginPage'), 'LoginPage')
 export const LazyRegisterPage = lazyNamed(() => import('../pages/RegisterPage'), 'RegisterPage')
 export const LazyFillPage = lazyNamed(() => import('../pages/FillPage'), 'FillPage')
+export const LazyPreviewPage = lazyNamed(() => import('../pages/PreviewPage'), 'PreviewPage')
 export const LazyHomePage = lazyNamed(() => import('../pages/HomePage'), 'HomePage')
 export const LazyEditorPage = lazyNamed(() => import('../pages/EditorPage'), 'EditorPage')
 export const LazyStatsPage = lazyNamed(() => import('../pages/StatsPage'), 'StatsPage')

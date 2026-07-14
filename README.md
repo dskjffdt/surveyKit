@@ -1,13 +1,14 @@
 # SurveyKit
 
-在线问卷系统 — React + TypeScript 前端，Node + Express 后端，JWT Cookie 鉴权，多角色权限。
+在线问卷系统 — React + TypeScript 前端，Node + Express + MySQL 后端，JWT httpOnly Cookie 鉴权，多角色权限。
 
 ## 功能
 
 - 问卷创建 / 编辑 / 发布 / 撤回
 - 四种题型：单选、多选、填空、评分
 - 填答页（公开访问，必填校验 + 防重复提交）
-- 答卷统计图表（ECharts）+ CSV 导出
+- 答卷统计（CSS 柱状图）+ CSV 导出
+- 问卷预览：编辑页弹窗预览、草稿新窗口预览、预览模式不提交
 - 题目拖拽排序、填答链接复制
 - 首页答卷数据概览
 - 多角色：管理员只读查看全平台数据，创建者负责问卷业务操作
@@ -15,9 +16,11 @@
 
 ## 技术栈
 
-**前端：** React 19 · TypeScript · Vite · Zustand · React Router · Axios
+**前端：** React 19 · TypeScript · Vite · TanStack React Query · Zustand（鉴权）· React Router · Axios
 
 **后端：** Node.js · Express · JWT · bcrypt · MySQL
+
+**工程：** 路由懒加载 · Vendor 分包 · PageGate 延迟加载
 
 ## 演示账号
 
@@ -31,15 +34,17 @@
 ```
 src/
   api/                    # axios 封装 + 接口
+  queries/                # React Query hooks
   types/                  # 类型定义
-  store/                  # Zustand 状态
+  store/                  # Zustand（登录会话）
+  services/               # 业务工具函数
   components/             # 组件
   pages/                  # 页面
 server/
   src/
     index.js              # Express 入口
     db.js                 # MySQL 连接与数据访问
-    middleware/auth.js    # JWT + 角色鉴权
+    middleware/auth.js      # JWT + 角色鉴权
     routes/               # auth / surveys / public
   sql/schema.sql          # 表结构参考
 ```
@@ -51,8 +56,9 @@ server/
 | `/login` | 登录 | 公开 |
 | `/register` | 注册 | 公开 |
 | `/` | 问卷列表 | 需登录 |
-| `/editor/:id` | 编辑问卷 | admin / creator |
-| `/fill/:id` | 填答 | 公开（需已发布） |
+| `/editor/:id` | 编辑问卷 | creator |
+| `/preview/:id` | 填答预览（草稿可预览，不提交） | admin / creator |
+| `/fill/:id` | 公开填答 | 公开（需已发布） |
 | `/stats/:id` | 答卷统计 | admin / creator |
 
 ## 本地开发
@@ -88,11 +94,12 @@ npm run preview  # 预览构建结果
 | POST | `/api/auth/logout` | 退出 |
 | GET | `/api/auth/me` | 当前用户 |
 | GET | `/api/surveys` | 问卷列表（按角色过滤） |
+| GET | `/api/surveys/:id` | 问卷详情（含草稿，需权限） |
 | POST | `/api/surveys` | 创建问卷 |
 | PUT | `/api/surveys/:id` | 更新问卷 |
 | DELETE | `/api/surveys/:id` | 删除问卷 |
 | GET | `/api/surveys/:id/responses` | 答卷列表 |
-| GET | `/api/public/surveys/:id` | 公开填答问卷 |
+| GET | `/api/public/surveys/:id` | 公开填答问卷（仅已发布） |
 | POST | `/api/public/surveys/:id/responses` | 提交答卷 |
 
 ## 环境变量
@@ -111,7 +118,7 @@ npm run preview  # 预览构建结果
 
 ## 部署说明
 
-- **前端**：可继续部署到 Vercel（`vercel.json` 已配置 SPA 回退）
+- **前端**：可部署到 Vercel（`vercel.json` 已配置 SPA 回退）
 - **后端**：需单独部署（Railway、Render 等），并设置 `CLIENT_ORIGIN` 为前端域名
 - 生产环境前端设置 `VITE_API_URL=https://你的后端域名/api`
 

@@ -23,18 +23,6 @@ export function authenticate(req, res, next) {
   }
 }
 
-export function optionalAuth(req, _res, next) {
-  const token = req.cookies.token
-  if (token) {
-    try {
-      req.user = jwt.verify(token, JWT_SECRET)
-    } catch {
-      req.user = null
-    }
-  }
-  next()
-}
-
 export function requireRole(...roles) {
   return (req, res, next) => {
     if (!req.user || !roles.includes(req.user.role)) {
